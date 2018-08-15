@@ -1,4 +1,5 @@
 const express = require('express');
+const expressWs = require('express-ws');
 const winston = require('winston');
 const uuid = require('uuid');
 
@@ -15,11 +16,20 @@ const logger = winston.createLogger({
 logger.info('Starting up TPP Server');
 
 const app = express();
+expressWs(app);
 
+app.use(function (req, res, next) {
+  logger.info('middleware');
+  req.testing = 'testing';
+  return next();
+});
 
-// respond with "hello world" when a GET request is made to the homepage
-app.get('/', function (req, res) {
-  res.send('hello world');
+app.ws('/', function(ws, req) {
+  ws.on('message', function(msg) {
+    logger.info(msg);
+    ws.send(msg);
+  });
+  logger.info('socket', req.testing);
 });
 
 const gameMap = {};
