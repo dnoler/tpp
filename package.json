@@ -3,9 +3,12 @@
   "version": "0.0.1",
   "description": "Ten Point Pitch Server",
   "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
   "scripts": {
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node ./node_modules/mocha/bin/mocha"
   },
   "author": "Danny Noler",
   "license": "ISC",
@@ -16,6 +19,8 @@
     "winston": "^3.0.0"
   },
   "devDependencies": {
-    "eslint": "^5.3.0"
+    "chai": "^4.1.2",
+    "eslint": "^5.3.0",
+    "mocha": "^5.2.0"
   }
 }

@@ -2,7 +2,7 @@ const express = require('express');
 const expressWs = require('express-ws');
 const winston = require('winston');
 const uuid = require('uuid');
-const Deck = require('./deck');
+const Game = require('./game');
 
 const logger = winston.createLogger({
   level: 'debug',
@@ -38,11 +38,9 @@ app.ws('/', function(ws, req) {
     }
     if (msg.command && msg.command === 'newGame') {
       const id = uuid.v4();
-      gameMap[id] = {id, status: 'active'};
-      gameMap[id].playerName = msg.playerName;
-      gameMap[id].deck = new Deck();
+      const game = new Game(id);
+      gameMap[id] = game;
       logger.info(`Starting new game with id ${id}: ${JSON.stringify(gameMap[id])}`);
-      logger.info(`deck: ${JSON.stringify(gameMap[id].deck.cards)}`);
     }
     ws.send(JSON.stringify(msg));
   });
