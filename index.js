@@ -2,7 +2,7 @@ const express = require('express');
 const expressWs = require('express-ws');
 const winston = require('winston');
 const uuid = require('uuid');
-const Game = require('./game');
+const Game = require('./tpp/game');
 
 const logger = winston.createLogger({
   level: 'debug',

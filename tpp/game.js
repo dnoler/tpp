@@ -1,4 +1,4 @@
-const Deck = require('./deck');
+const Kitty = require('./kitty');
 
 module.exports = class Game {
   constructor(id) {
@@ -17,10 +17,10 @@ module.exports = class Game {
   }
 
   dealHand() {
-    this.deck = new Deck();
-    this.players.player.cards = this.deck.deal(9);
-    this.players.comp1.cards = this.deck.deal(9);
-    this.players.comp2.cards = this.deck.deal(9);
-    this.players.comp3.cards = this.deck.deal(9);
+    this.kitty = new Kitty();
+    this.players.player.cards = this.kitty.deal(9);
+    this.players.comp1.cards = this.kitty.deal(9);
+    this.players.comp2.cards = this.kitty.deal(9);
+    this.players.comp3.cards = this.kitty.deal(9);
   }
 };

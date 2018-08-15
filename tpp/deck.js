@@ -1,4 +1,4 @@
-const ALL_CARDS = [
+module.exports = [
   {id: 'ac', sortOrder: '13', suite: 'Clubs', value: 'Ace', rank: '1', points: '1'},
   {id: '2c', sortOrder: '1', suite: 'Clubs', value: '2', rank: '0', points: '1'},
   {id: '3c', sortOrder: '2', suite: 'Clubs', value: '3', rank: '15', points: '3'},
@@ -74,21 +74,3 @@ const ALL_CARDS = [
   {id: 'joker1', sortOrder: '53', suite: '', value: 'Joker', rank: '6', firstPlayRankPlus: '1', points: '1'},
   {id: 'joker2', sortOrder: '54', suite: '', value: 'Joker', rank: '6', firstPlayRankPlus: '1', points: '1'}
 ];
-
-module.exports = class Deck {
-  constructor() {
-    this.kitty = [];
-    const allCards = ALL_CARDS.slice();
-    for (let i = ALL_CARDS.length; i > 0; i--) {
-      const index = Math.floor(Math.random() * i);
-      this.kitty.push(allCards.splice(index, 1)[0]);
-    }
-  }
-
-  deal(count) {
-    if (count > this.kitty.length) {
-      throw new Error('Desired deal count exceeds kitty length');
-    }
-    return this.kitty.splice(0, count).sort((a, b) => { return a.sortOrder - b.sortOrder; });
-  }
-};

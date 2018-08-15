@@ -1,6 +1,6 @@
 /* global describe,it */
 const expect = require('chai').expect;
-const Game = require('../game');
+const Game = require('../tpp/game');
 
 describe('Game', function() {
   it('initializes the game', function() {
@@ -32,7 +32,7 @@ describe('Game', function() {
     it('deals 9 cards to each player and leaves the rest in the kitty', function() {
       const game = new Game('123');
       game.dealHand();
-      expect(game).to.have.property('deck');
+      expect(game).to.have.property('kitty');
       expect(game.players.player).to.have.property('cards');
       expect(game.players.player.cards.length).to.be.equal(9);
       expect(game.players.comp1).to.have.property('cards');
