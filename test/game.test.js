@@ -1,46 +1,59 @@
 /* global describe,it */
-const expect = require('chai').expect;
+const chai = require('chai');
+const spies = require('chai-spies');
 const Game = require('../tpp/game');
+const { expect } = chai;
+chai.use(spies);
 
-describe('Game', function() {
+describe('game', function() {
   it('initializes the game', function() {
     const game = new Game('123');
     expect(game.id).to.be.equal('123');
-    expect(game).to.have.property('players');
-    expect(game.players).to.have.property('player');
-    expect(game.players.player).to.have.property('team');
-    expect(game.players.player.team).to.be.equal('1');
-    expect(game.players).to.have.property('comp1');
-    expect(game.players.comp1).to.have.property('team');
-    expect(game.players.comp1.team).to.be.equal('2');
-    expect(game.players).to.have.property('comp2');
-    expect(game.players.comp2).to.have.property('team');
-    expect(game.players.comp2.team).to.be.equal('1');
-    expect(game.players).to.have.property('comp3');
-    expect(game.players.comp3).to.have.property('team');
-    expect(game.players.comp3.team).to.be.equal('2');
-    expect(game.dealer).to.be.equal('player');
-    expect(game.teams).to.have.property('1');
-    expect(game.teams['1']).to.have.property('score');
-    expect(game.teams['1'].score).to.be.equal(0);
-    expect(game.teams).to.have.property('2');
-    expect(game.teams['2']).to.have.property('score');
-    expect(game.teams['2'].score).to.be.equal(0);
+    expect(game).to.have.property('gameState');
+    expect(game).to.have.property('currentState');
   });
 
-  describe('dealHand', function() {
-    it('deals 9 cards to each player and leaves the rest in the kitty', function() {
+  describe('make play', function() {
+    it('throws error if command is invalid', function() {
       const game = new Game('123');
-      game.dealHand();
-      expect(game).to.have.property('kitty');
-      expect(game.players.player).to.have.property('cards');
-      expect(game.players.player.cards.length).to.be.equal(9);
-      expect(game.players.comp1).to.have.property('cards');
-      expect(game.players.comp1.cards.length).to.be.equal(9);
-      expect(game.players.comp2).to.have.property('cards');
-      expect(game.players.comp2.cards.length).to.be.equal(9);
-      expect(game.players.comp3).to.have.property('cards');
-      expect(game.players.comp3.cards.length).to.be.equal(9);
+      const currentState = {command: 'myCommand'};
+      game.currentState = currentState;
+      const request = {command: 'otherCommand'};
+      expect(() => game.makePlay(request)).to.throw('Command not valid for current game state. Valid commands are: myCommand');
+    });
+
+    it('throws error if command does not exist', function() {
+      const game = new Game('123');
+      const currentState = {command: 'myCommand'};
+      game.currentState = currentState;
+      const request = {command: 'myCommand'};
+      expect(() => game.makePlay(request)).to.throw('Command not valid for current game state. Valid commands are: myCommand');
+    });
+
+    it('calls command and sets next player', function() {
+      const game = new Game('123');
+      const currentStateSpy = chai.spy();
+      const gameStateSpy = chai.spy();
+      const currentState = {command: 'myCommand', myCommand: currentStateSpy, checkEndState: function() { return false; }};
+      const gameState = {nextPlayer: gameStateSpy};
+      const request = {command: 'myCommand', value: 'someValue'};
+      game.currentState = currentState;
+      game.gameState = gameState;
+      game.makePlay(request);
+      expect(currentStateSpy).to.have.been.called.with('someValue');
+      expect(gameStateSpy).to.have.been.called();
+    });
+
+    it('sets next state if end state is true', function() {
+      const game = new Game('123');
+      const currentStateSpy = chai.spy();
+      const currentState = {command: 'myCommand', myCommand: function() {}, checkEndState: function() { return true; }, onNextState: currentStateSpy};
+      const gameState = {nextPlayer: function() {}};
+      const request = {command: 'myCommand', value: 'someValue'};
+      game.currentState = currentState;
+      game.gameState = gameState;
+      game.makePlay(request);
+      expect(currentStateSpy).to.have.been.called.with(gameState);
     });
   });
 });

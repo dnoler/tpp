@@ -2,7 +2,7 @@
 const expect = require('chai').expect;
 const Kitty = require('../tpp/kitty');
 
-describe('Kitty', function() {
+describe('kitty', function() {
   it('initializes the kitty', function() {
     const kitty = new Kitty();
     expect(kitty).to.have.property('cards');

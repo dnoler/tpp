@@ -1,26 +1,24 @@
-const Kitty = require('./kitty');
+const GameState = require('./states/game-state');
+const STATE_MAP = require('./states/state-map');
 
 module.exports = class Game {
   constructor(id) {
     this.id = id;
-    this.players = {
-      player: {team: '1'},
-      comp1: {team: '2'},
-      comp2: {team: '1'},
-      comp3: {team: '2'}
-    };
-    this.teams = {
-      '1': {score: 0},
-      '2': {score: 0}
-    };
-    this.dealer = 'player';
+    this.gameState = new GameState();
+    this.currentState = new STATE_MAP.initialState();
   }
 
-  dealHand() {
-    this.kitty = new Kitty();
-    this.players.player.cards = this.kitty.deal(9);
-    this.players.comp1.cards = this.kitty.deal(9);
-    this.players.comp2.cards = this.kitty.deal(9);
-    this.players.comp3.cards = this.kitty.deal(9);
+  makePlay(request) {
+    if (request.command !== this.currentState.command || !this.currentState[request.command]) {
+      throw new Error('Command not valid for current game state. Valid commands are: ' + this.currentState.command);
+    }
+    this.currentState[request.command](this.gameState.currentPlayer, request.value);
+    this.gameState.nextPlayer();
+    if (this.currentState.checkEndState()) {
+      this.currentState.onNextState(this.gameState);
+      if (this.currentState.nextState) {
+        this.currentState = new STATE_MAP[this.currentState.nextState];
+      }
+    }
   }
 };
