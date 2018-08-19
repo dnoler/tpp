@@ -30,6 +30,31 @@ describe('bid', function() {
       bid.bid('comp2', 5);
       expect(bid.state.playerBids.comp2).to.be.equal(5);
     });
+
+    it('accepts pass if not last player', function() {
+      const bid = new Bid();
+      bid.state.playerBids.comp1 = 4;
+      bid.bid('comp2', 0);
+      expect(bid.state.playerBids.comp2).to.be.equal(0);
+    });
+
+    it('requires bid if no player bids', function() {
+      const bid = new Bid();
+      bid.state.playerBids.comp1 = 0;
+      bid.state.playerBids.comp2 = 0;
+      bid.state.playerBids.comp3 = 0;
+      expect(() => bid.bid('player', 0)).to.throw('All other players have passed, minimum bid is 4');
+    });
+
+    it('requires minimum bid of 4', function() {
+      const bid = new Bid();
+      expect(() => bid.bid('player', 3)).to.throw('Minimum bid is 4');
+    });
+
+    it('will not accept bid greater than 10', function() {
+      const bid = new Bid();
+      expect(() => bid.bid('player', 11)).to.throw('Maximum bid is 10');
+    });
   });
 
   it('correctly checks for end state', function() {

@@ -26,4 +26,17 @@ describe('game state', function() {
     expect(gameState.teams['2']).to.have.property('score');
     expect(gameState.teams['2'].score).to.be.equal(0);
   });
+
+  it('sets next player', function() {
+    const gameState = new GameState();
+    expect(gameState.currentPlayerIndex).to.be.equal(0);
+    gameState.nextPlayer();
+    expect(gameState.currentPlayerIndex).to.be.equal(1);
+    gameState.nextPlayer();
+    expect(gameState.currentPlayerIndex).to.be.equal(2);
+    gameState.nextPlayer();
+    expect(gameState.currentPlayerIndex).to.be.equal(3);
+    gameState.nextPlayer();
+    expect(gameState.currentPlayerIndex).to.be.equal(0);
+  });
 });
